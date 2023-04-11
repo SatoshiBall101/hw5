@@ -33,17 +33,16 @@ std::set<std::string> wordle(
 
 		for (size_t i = 0; i < currentGuess.size(); i++)
     {
-        if (currentGuess[i] == '-')
-				{
-					numBlanks++;
-				} 
+      if (currentGuess[i] == '-')
+			{
+				numBlanks++;
+			} 
     }
 
     for (size_t i = 0; i < guaranteedLetters.size(); i++)
     {
-        char temp = guaranteedLetters[i];
-        letterCount[temp]++; 
-  
+      char temp = guaranteedLetters[i];
+      letterCount[temp]++; 
     }
 
     findAnswers(possibleAnswers, currentGuess, letterCount, guaranteedLetters, idx, dict, numBlanks);
@@ -56,62 +55,58 @@ std::set<std::string> wordle(
 
 void findAnswers(set<string>& possibleAnswers, string& currentGuess, map<char, int>& letterCount, string& guaranteedLetters, size_t idx, const set<string>& dict, size_t numBlanks) 
 {
-
-		if (idx == currentGuess.size()) // base case
+	if (idx == currentGuess.size()) // base case
+	{
+    if (dict.count(currentGuess) == 1) // letter combination is an actual word
 		{
-        if (dict.count(currentGuess) == 1) // letter combination is an actual word
-				{
-
-					// Check that the count of each guaranteed letter in the guess matches the count in the guaranteedLetters string
-					bool containsAllGL = true;
-					for (size_t i = 0; i < guaranteedLetters.size(); i++)
-					{
-						if (letterCount[guaranteedLetters[i]] > count(currentGuess.begin(), currentGuess.end(), guaranteedLetters[i]))
-						{
-							containsAllGL = false;
-							break;
-						}
-					}
-
-					if (containsAllGL)
-					{
-						possibleAnswers.insert(currentGuess);
-					} 
-        }
-        return;
-    }
-
-
-    char fixedChar = currentGuess[idx];
-
-    if (fixedChar == '-') 
-		{
-
-			if(numBlanks == guaranteedLetters.size()) // only need to guess from GL
+			// Check that the count of each guaranteed letter in the guess matches the count in the guaranteedLetters string
+			bool containsAllGL = true;
+			for (size_t i = 0; i < guaranteedLetters.size(); i++)
 			{
-				for (size_t i = 0; i < guaranteedLetters.size(); i++) 
+				if (letterCount[guaranteedLetters[i]] > count(currentGuess.begin(), currentGuess.end(), guaranteedLetters[i]))
 				{
-            string newGuess = currentGuess;
-            newGuess[idx] = guaranteedLetters[i];
-
-            findAnswers(possibleAnswers, newGuess, letterCount, guaranteedLetters, idx + 1, dict, numBlanks);   
-      	}
-
+					containsAllGL = false;
+					break;
+				}
 			}
-			else
+			if (containsAllGL)
 			{
-				for (char c = 'a'; c <= 'z'; c++) 
-				{
-          string newGuess = currentGuess;
-          newGuess[idx] = c;
-
-          findAnswers(possibleAnswers, newGuess, letterCount, guaranteedLetters, idx + 1, dict, numBlanks);   
-      	}
-			}  
-    } 
-		else 
-		{ // if fixedChar is not '-' it is a green letter so move on
-        findAnswers(possibleAnswers, currentGuess, letterCount, guaranteedLetters, idx + 1, dict, numBlanks);
+				possibleAnswers.insert(currentGuess);
+			} 
     }
+
+    return;
+  }
+
+  char fixedChar = currentGuess[idx];
+
+  if (fixedChar == '-') 
+	{
+		if(numBlanks == guaranteedLetters.size()) // only need to guess from GL
+		{
+			for (size_t i = 0; i < guaranteedLetters.size(); i++) 
+			{
+      	string newGuess = currentGuess;
+        newGuess[idx] = guaranteedLetters[i];
+
+        findAnswers(possibleAnswers, newGuess, letterCount, guaranteedLetters, idx + 1, dict, numBlanks);   
+      }
+
+		}
+		else
+		{
+			for (char c = 'a'; c <= 'z'; c++) 
+			{
+        string newGuess = currentGuess;
+        newGuess[idx] = c;
+
+        findAnswers(possibleAnswers, newGuess, letterCount, guaranteedLetters, idx + 1, dict, numBlanks);   
+      }
+		}  
+  } 
+	else 
+	{ // if fixedChar is not '-' it is a green letter so move on
+  	findAnswers(possibleAnswers, currentGuess, letterCount, guaranteedLetters, idx + 1, dict, numBlanks);
+  }
 }
 
