@@ -72,7 +72,7 @@ void findAnswers(set<string>& possibleAnswers, string& currentGuess, map<char, i
 			if (containsAllGL)
 			{
 				possibleAnswers.insert(currentGuess);
-			} 
+			}
     }
 
     return;
@@ -95,15 +95,22 @@ void findAnswers(set<string>& possibleAnswers, string& currentGuess, map<char, i
 		}
 		else
 		{
-			for (char c = 'a'; c <= 'z'; c++) 
+			for (char c = 'a'; c <= 'z'; c++)
 			{
         string newGuess = currentGuess;
         newGuess[idx] = c;
 
+				// int index = guaranteedLetters.find(c);
+
+				// if(index != string::npos) // have a floating letter
+				// {
+				// 	guaranteedLetters.erase(index, 1);
+				// }
+
         findAnswers(possibleAnswers, newGuess, letterCount, guaranteedLetters, idx + 1, dict, numBlanks);   
       }
-		}  
-  } 
+		}
+  }
 	else 
 	{ // if fixedChar is not '-' it is a green letter so move on
   	findAnswers(possibleAnswers, currentGuess, letterCount, guaranteedLetters, idx + 1, dict, numBlanks);
